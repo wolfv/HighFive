@@ -12,7 +12,9 @@
 // internal utilities functions
 #include <cstddef> // __GLIBCXX__
 #include <exception>
+#include <memory>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #ifdef H5_USE_BOOST
@@ -26,22 +28,6 @@
 #else
 #define H5_USE_CXX11 0
 #endif
-#endif
-
-// shared ptr portability
-// if boost is used, simply use boost
-#if (defined H5_USE_BOOST)
-#include <boost/shared_ptr.hpp>
-// if C++11 compliant compiler, use std::shared_ptr
-#elif H5_USE_CXX11
-#include <memory>
-// GNU C++ or Intel C++ using libstd++.
-// without C++11: use tr1
-#elif defined(__GNUC__) && __GNUC__ >= 4 && (defined(__GLIBCXX__))
-#include <tr1/memory>
-// last hope to find it in standard <memory> ( VC++, libc++ )
-#else
-#include <memory>
 #endif
 
 namespace HighFive {
@@ -193,19 +179,12 @@ struct remove_const<Type const> {
     typedef Type type;
 };
 
+
+
 // shared ptr portability
+// was used pre-C++11, kept for compatibility
 namespace Mem {
-
-#if (defined H5_USE_BOOST)
-using namespace boost;
-#elif ___cplusplus >= 201103L
-using namespace std;
-#elif defined(__GNUC__) && __GNUC__ >= 4 && (defined(__GLIBCXX__))
-using namespace std::tr1;
-#else
-using namespace std;
-#endif
-
+    using namespace std;
 } // end Mem
 
 } // end details

@@ -29,10 +29,6 @@
 
 #include "H5Utils.hpp"
 
-#if H5_USE_CXX11
-#include <type_traits>
-#endif
-
 namespace HighFive {
 
 namespace details {
@@ -111,12 +107,11 @@ single_buffer_to_vectors(typename std::vector<T>::iterator begin_buffer,
 template <typename Scalar, class Enable = void>
 struct data_converter {
     inline data_converter(Scalar& datamem, DataSpace& space) {
-#if H5_USE_CXX11
-        static_assert((std::is_arithmetic<ScalarValue>::value ||
-                       std::is_same<std::string, ScalarValue>::value),
+
+        static_assert((std::is_arithmetic<Scalar>::value ||
+                       std::is_same<std::string, Scalar>::value),
                       "supported datatype should be an arithmetic value, a "
                       "std::string or a container/array");
-#endif
         (void)datamem;
         (void)space; // do nothing
     }
